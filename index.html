@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AXIS Connect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#f58220;--ink:#1c1f26;--muted:#8b90a0;--line:#e6e8ef;
+  --font:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);color:var(--ink);min-height:100vh;
+  background:radial-gradient(1100px 600px at 100% -10%,#fff2e6,transparent),
+    radial-gradient(900px 500px at -10% 0,#eef3ff,transparent),#f4f5f8;
+  display:flex;align-items:center;justify-content:center;padding:40px 22px}
+.wrap{max-width:940px;width:100%}
+.logo{font-weight:800;font-size:30px;letter-spacing:1px;color:#4a4f5a}
+.logo .x{color:var(--primary)}
+h1{font-size:34px;margin:14px 0 8px;letter-spacing:-.02em}
+.lead{color:var(--muted);font-size:15px;margin:0 0 30px;max-width:600px;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);
+  border-radius:18px;padding:24px;box-shadow:0 10px 30px rgba(20,24,31,.05);transition:.18s}
+.card:hover{transform:translateY(-4px);box-shadow:0 20px 44px rgba(20,24,31,.12);border-color:#f5c79b}
+.card .ic{width:52px;height:52px;border-radius:14px;background:#fdecd9;color:var(--primary);
+  display:grid;place-items:center;margin-bottom:16px}
+.card h3{margin:0 0 6px;font-size:18px}
+.card p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+.card .go{margin-top:16px;color:var(--primary);font-weight:600;font-size:13px}
+.foot{margin-top:30px;color:var(--muted);font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">A<span class="x">X</span>IS <span style="font-weight:600;font-size:18px;color:var(--muted)">Connect</span></div>
+  <h1>Corporate Social + HRMS App</h1>
+  <p class="lead">A design-to-code build from the AXIS Connect Figma file — an interactive coded app, a full flow diagram, and a pixel-accurate screen prototype.</p>
+  <div class="grid">
+    <a class="card" href="axis-connect-app.html">
+      <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M10 18h4" stroke-linecap="round"/></svg></div>
+      <h3>Interactive App</h3>
+      <p>The coded application — 30 screens, live navigation, HRMS, payslips, chat and more.</p>
+      <div class="go">Open the app →</div>
+    </a>
+    <a class="card" href="axis-connect-flow.html">
+      <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="7" height="6" rx="2"/><rect x="14" y="4" width="7" height="6" rx="2"/><rect x="8.5" y="14" width="7" height="6" rx="2"/><path d="M6.5 10v2a2 2 0 0 0 2 2h3M17.5 10v2a2 2 0 0 1-2 2h-3" stroke-linecap="round"/></svg></div>
+      <h3>Complete Flow</h3>
+      <p>Navigation map of every screen across the 6 modules and how they connect.</p>
+      <div class="go">View the flow →</div>
+    </a>
+    <a class="card" href="axis-connect-prototype/index.html">
+      <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M9 18v3M15 18v3M8 21h8" stroke-linecap="round"/></svg></div>
+      <h3>Screen Prototype</h3>
+      <p>All 179 Figma screens exported and organised into the complete clickable flow.</p>
+      <div class="go">Browse screens →</div>
+    </a>
+  </div>
+  <div class="foot">Built with Claude Code · AXIS Connect</div>
+</div>
+</body>
+</html>

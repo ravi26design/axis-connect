@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AXIS Connect — Complete App Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#f58220;--primary-d:#e0730f;--soft:#fdecd9;--ink:#1c1f26;--muted:#8b90a0;
+  --line:#e6e8ef;--bg:#f4f5f8;--green:#22c55e;--blue:#267dff;--font:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);background:
+  radial-gradient(1200px 600px at 100% -5%,#fff2e6,transparent),
+  radial-gradient(900px 500px at -10% 10%,#eef3ff,transparent),var(--bg);
+  color:var(--ink);padding:34px 22px 70px}
+.wrap{max-width:1120px;margin:0 auto}
+/* hero */
+.hero{margin-bottom:26px}
+.logo{font-weight:800;font-size:26px;letter-spacing:1px;color:#4a4f5a}
+.logo .x{color:var(--primary)}
+.hero h1{font-size:30px;margin:10px 0 6px;letter-spacing:-.02em}
+.hero p{color:var(--muted);font-size:14px;margin:0;max-width:640px;line-height:1.6}
+.stats{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 16px}
+.stat b{font-size:20px;display:block;line-height:1.1}
+.stat span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;font-size:11.5px;color:var(--muted)}
+.legend i{display:inline-flex;align-items:center;gap:6px}
+.lg{width:22px;height:14px;border-radius:5px;border:1.5px solid var(--line);background:#fff;display:inline-block}
+.lg.start{background:var(--primary);border-color:var(--primary)}
+.lg.hub{background:var(--soft);border-color:var(--primary);border-width:2px}
+.lg.ghost{border-style:dashed;background:#fafbfc}
+/* stage */
+.stage{background:#fff;border:1px solid #edeff3;border-radius:20px;padding:20px 22px;margin-bottom:20px;
+  box-shadow:0 10px 30px rgba(20,24,31,.05)}
+.stage-h{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.stage-h .num{width:32px;height:32px;border-radius:9px;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:800;font-size:15px;flex:0 0 auto}
+.stage-h h2{margin:0;font-size:18px}
+.stage-h .tag{margin-left:auto;color:var(--muted);font-size:11.5px;background:var(--bg);padding:5px 11px;border-radius:20px}
+.stage-note{color:var(--muted);font-size:12.5px;margin:0 0 14px 44px}
+/* flow rows */
+.row{display:flex;align-items:center;gap:10px;overflow-x:auto;padding:8px 2px 12px}
+.row::-webkit-scrollbar{height:7px}
+.row::-webkit-scrollbar-thumb{background:#dfe2e9;border-radius:4px}
+.node{display:flex;align-items:center;gap:9px;background:#fff;border:1.6px solid var(--line);border-radius:13px;
+  padding:11px 15px;font-weight:600;font-size:13px;box-shadow:0 4px 12px rgba(20,24,31,.06);white-space:nowrap;flex:0 0 auto}
+.node .d{width:8px;height:8px;border-radius:50%;background:var(--primary);flex:0 0 auto}
+.node small{color:var(--muted);font-weight:500;font-size:11px}
+.node.start{background:var(--primary);color:#fff;border-color:var(--primary)}
+.node.start .d{background:#fff}
+.node.hub{border-color:var(--primary);border-width:2px;background:var(--soft)}
+.node.ghost{border-style:dashed;color:#9096a4;background:#fafbfc;box-shadow:none}
+.node.ghost .d{background:#c3c6ce}
+.arr{position:relative;width:32px;height:2px;background:#d3d7df;flex:0 0 auto}
+.arr::after{content:'';position:absolute;right:-1px;top:-4px;border-left:8px solid #d3d7df;border-top:5px solid transparent;border-bottom:5px solid transparent}
+.arr[data-l]::before{content:attr(data-l);position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:9.5px;color:#a2a7b3;white-space:nowrap;font-weight:600}
+/* branch */
+.sub{margin:4px 0 4px 20px;border-left:2px dashed #e4e7ee;padding:4px 0 4px 18px}
+.sub .cap{font-size:10.5px;color:#9aa0ab;font-weight:700;margin:6px 0 6px;text-transform:uppercase;letter-spacing:.06em}
+/* grid of leaf nodes */
+.leaves{display:flex;flex-wrap:wrap;gap:10px;margin-left:20px;margin-top:4px}
+.hubwrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pillbar{display:inline-flex;gap:8px;background:var(--bg);border-radius:16px;padding:8px;flex-wrap:wrap}
+.pillbar .node{box-shadow:none;font-size:12.5px;padding:9px 13px}
+.foot{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+@media(max-width:560px){.hero h1{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="logo">A<span class="x">X</span>IS <span style="font-weight:600;font-size:16px;color:var(--muted)">Connect</span></div>
+    <h1>Complete Application Flow</h1>
+    <p>Every screen in the coded app and how a user moves between them — from launch through authentication, the main tab shell, the side drawer, HRMS self-service, and messaging.</p>
+    <div class="stats">
+      <div class="stat"><b>30</b><span>Screens</span></div>
+      <div class="stat"><b>6</b><span>Modules</span></div>
+      <div class="stat"><b>4</b><span>Bottom tabs</span></div>
+      <div class="stat"><b>9</b><span>Drawer links</span></div>
+    </div>
+    <div class="legend">
+      <i><span class="lg start"></span> Entry / Start</i>
+      <i><span class="lg hub"></span> Hub screen</i>
+      <i><span class="lg"></span> Screen</i>
+      <i><span class="lg ghost"></span> Overlay / sheet / placeholder</i>
+    </div>
+  </div>
+
+  <!-- 1 · AUTH -->
+  <div class="stage">
+    <div class="stage-h"><span class="num">1</span><h2>Launch &amp; Authentication</h2><span class="tag">8 screens</span></div>
+    <p class="stage-note">App opens on the splash, auto-advances to onboarding, then into the auth screens.</p>
+    <div class="row">
+      <div class="node start"><span class="d"></span>Splash</div>
+      <span class="arr" data-l="auto · 2s"></span>
+      <div class="node"><span class="d"></span>Onboarding</div>
+      <span class="arr" data-l="Get Started"></span>
+      <div class="node hub"><span class="d"></span>Login</div>
+      <span class="arr" data-l="Login"></span>
+      <div class="node"><span class="d"></span>Home <small>(app)</small></div>
+    </div>
+    <div class="sub">
+      <div class="cap">Branches from Login</div>
+      <div class="row">
+        <div class="node"><span class="d"></span>Sign Up</div>
+        <span class="arr" data-l="Get OTP"></span>
+        <div class="node"><span class="d"></span>Home</div>
+        <span class="arr"></span>
+        <div class="node ghost"><span class="d"></span>↩ Login</div>
+      </div>
+      <div class="cap">Forgot Password</div>
+      <div class="row">
+        <div class="node"><span class="d"></span>Reset Password</div>
+        <span class="arr" data-l="Send Code"></span>
+        <div class="node"><span class="d"></span>Enter OTP</div>
+        <span class="arr" data-l="Verify"></span>
+        <div class="node"><span class="d"></span>Set New Password</div>
+        <span class="arr" data-l="Update"></span>
+        <div class="node"><span class="d"></span>Success</div>
+        <span class="arr" data-l="Back to Login"></span>
+        <div class="node ghost"><span class="d"></span>↩ Login</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 · SHELL -->
+  <div class="stage">
+    <div class="stage-h"><span class="num">2</span><h2>Home &amp; Global Navigation</h2><span class="tag">app shell</span></div>
+    <p class="stage-note">The header, bottom navigation and floating button persist across the four main tabs.</p>
+    <div class="sub" style="border:none;margin-left:0;padding-left:0">
+      <div class="cap">Bottom navigation — switch freely ⇄</div>
+      <div class="pillbar">
+        <div class="node hub"><span class="d"></span>Home</div>
+        <div class="node"><span class="d"></span>Community</div>
+        <div class="node"><span class="d"></span>Trending <small>News · Poll · Survey</small></div>
+        <div class="node"><span class="d"></span>HRMS</div>
+      </div>
+    </div>
+    <div class="sub">
+      <div class="cap">Floating button &amp; header actions</div>
+      <div class="row">
+        <div class="node ghost"><span class="d"></span>＋ FAB</div><span class="arr"></span><div class="node"><span class="d"></span>Add Post</div>
+        <span style="width:14px"></span>
+        <div class="node ghost"><span class="d"></span>🔔 Bell</div><span class="arr"></span><div class="node"><span class="d"></span>Notifications</div>
+        <span style="width:14px"></span>
+        <div class="node ghost"><span class="d"></span>Avatar</div><span class="arr"></span><div class="node"><span class="d"></span>Profile</div>
+        <span style="width:14px"></span>
+        <div class="node ghost"><span class="d"></span>☰ Menu</div><span class="arr"></span><div class="node hub"><span class="d"></span>Side Drawer</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 · DRAWER -->
+  <div class="stage">
+    <div class="stage-h"><span class="num">3</span><h2>Side Drawer</h2><span class="tag">9 links</span></div>
+    <p class="stage-note">Opened from the ☰ menu on any main tab. Each item routes to its screen.</p>
+    <div class="hubwrap">
+      <div class="node hub"><span class="d"></span>Drawer</div>
+      <span class="arr"></span>
+      <div class="leaves" style="margin:0">
+        <div class="node"><span class="d"></span>My Wall</div>
+        <div class="node"><span class="d"></span>Resources</div>
+        <div class="node"><span class="d"></span>Events</div>
+        <div class="node"><span class="d"></span>Connect <small>(chat)</small></div>
+        <div class="node"><span class="d"></span>Colleagues</div>
+        <div class="node"><span class="d"></span>Magazine</div>
+        <div class="node"><span class="d"></span>Change Password</div>
+        <div class="node ghost"><span class="d"></span>Take a Meter Reading</div>
+        <div class="node ghost"><span class="d"></span>Inward Billing</div>
+        <div class="node ghost"><span class="d"></span>Logout ↩</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 · HRMS -->
+  <div class="stage">
+    <div class="stage-h"><span class="num">4</span><h2>HRMS — Self Service</h2><span class="tag">quick actions</span></div>
+    <p class="stage-note">From the HRMS dashboard (Check-in, Attendance &amp; Leave summaries) the Quick Actions open four flows.</p>
+    <div class="hubwrap" style="margin-bottom:12px">
+      <div class="node hub"><span class="d"></span>HRMS Dashboard</div>
+    </div>
+    <div class="sub">
+      <div class="cap">My Leaves</div>
+      <div class="row">
+        <div class="node"><span class="d"></span>My Leaves <small>filter by status</small></div>
+        <span class="arr" data-l="Apply Leave"></span>
+        <div class="node"><span class="d"></span>Apply Leave <small>menu</small></div>
+        <span class="arr" data-l="Leave"></span>
+        <div class="node"><span class="d"></span>Leave Form</div>
+        <span class="arr" data-l="date field"></span>
+        <div class="node ghost"><span class="d"></span>Date Picker</div>
+      </div>
+      <div class="cap">Payslips</div>
+      <div class="row">
+        <div class="node"><span class="d"></span>Payslips <small>year: 2026 · 2025 · 2024</small></div>
+        <span class="arr" data-l="open"></span>
+        <div class="node"><span class="d"></span>Payslip Detail <small>earnings · deductions · PDF</small></div>
+      </div>
+      <div class="cap">Also from HRMS</div>
+      <div class="leaves" style="margin-left:0">
+        <div class="node"><span class="d"></span>Holidays</div>
+        <div class="node"><span class="d"></span>Attendance <small>calendar</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 · MESSAGING -->
+  <div class="stage">
+    <div class="stage-h"><span class="num">5</span><h2>Messaging</h2><span class="tag">Connect</span></div>
+    <p class="stage-note">Chat is reached from the drawer's Connect item or by messaging a colleague.</p>
+    <div class="row">
+      <div class="node"><span class="d"></span>Connect <small>Direct · Groups</small></div>
+      <span class="arr" data-l="open chat"></span>
+      <div class="node"><span class="d"></span>Chat Thread <small>send · reply</small></div>
+    </div>
+    <div class="sub" style="margin-top:0">
+      <div class="cap">Also</div>
+      <div class="row">
+        <div class="node"><span class="d"></span>Colleagues</div>
+        <span class="arr" data-l="Message"></span>
+        <div class="node"><span class="d"></span>Chat Thread</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 · CONTENT -->
+  <div class="stage">
+    <div class="stage-h"><span class="num">6</span><h2>Content &amp; Social Screens</h2><span class="tag">feeds</span></div>
+    <p class="stage-note">Reached from the tabs, drawer, header and post composer.</p>
+    <div class="leaves" style="margin-left:0">
+      <div class="node"><span class="d"></span>Community Feed <small>like · comment · share</small></div>
+      <div class="node"><span class="d"></span>Trending <small>News / Poll / Survey</small></div>
+      <div class="node"><span class="d"></span>Add Post <small>composer</small></div>
+      <div class="node"><span class="d"></span>My Wall</div>
+      <div class="node"><span class="d"></span>Resources</div>
+      <div class="node"><span class="d"></span>Events</div>
+      <div class="node"><span class="d"></span>Profile</div>
+      <div class="node"><span class="d"></span>Notifications</div>
+      <div class="node"><span class="d"></span>Groups</div>
+      <div class="node"><span class="d"></span>Change Password</div>
+    </div>
+  </div>
+
+  <p class="foot">AXIS Connect · generated from the coded app <b>axis-connect-app.html</b> — 30 screens across 6 modules.</p>
+</div>
+</body>
+</html>

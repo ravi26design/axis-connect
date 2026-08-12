@@ -1,0 +1,205 @@
+<meta charset="utf-8">
+<title>AXIS Connect — Prototype Flow</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --orange:#F26722; --orange-d:#d9541a; --ink:#15181d; --muted:#6b7280;
+  --bg:#eef0f4; --card:#ffffff; --line:#e3e6ec; --side:#151a22; --side2:#1d2430;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+/* Sidebar */
+.side{position:fixed;top:0;left:0;bottom:0;width:264px;background:var(--side);color:#cdd4df;
+  display:flex;flex-direction:column;z-index:20}
+.brand{padding:22px 20px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.brand .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;color:#fff;letter-spacing:.3px}
+.brand .logo .dot{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#F58634,#F26722);
+  display:grid;place-items:center;color:#fff;font-size:14px;font-weight:900}
+.brand .sub{margin-top:8px;font-size:11.5px;color:#8b93a1;line-height:1.5}
+.nav{overflow-y:auto;padding:10px 10px 24px;flex:1}
+.nav .navh{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:#5f6a7a;padding:12px 12px 6px}
+.nav a{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:9px;font-size:13px;
+  color:#c2cad6;text-decoration:none;cursor:pointer;transition:.15s}
+.nav a .n{min-width:22px;height:22px;padding:0 5px;border-radius:6px;background:var(--side2);color:#8a93a2;
+  display:grid;place-items:center;font-size:10.5px;font-weight:700}
+.nav a .cnt{margin-left:auto;font-size:11px;color:#69727f}
+.nav a:hover{background:var(--side2);color:#fff}
+.nav a.active{background:linear-gradient(90deg,rgba(242,103,34,.18),rgba(242,103,34,.02));color:#fff}
+.nav a.active .n{background:var(--orange);color:#fff}
+/* Main */
+.main{margin-left:264px}
+.top{position:sticky;top:0;background:rgba(238,240,244,.85);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);padding:16px 30px;z-index:15;display:flex;align-items:center;gap:18px}
+.top h1{font-size:16px;margin:0;font-weight:700}
+.top .meta{font-size:12px;color:var(--muted);margin-top:2px}
+.top .search{margin-left:auto;position:relative}
+.top .search input{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px 9px 32px;
+  font-size:13px;width:220px;outline:none}
+.top .search input:focus{border-color:var(--orange)}
+.top .search svg{position:absolute;left:10px;top:9px;opacity:.45}
+.hero{padding:30px 30px 8px}
+.hero h2{margin:0 0 6px;font-size:26px;letter-spacing:-.02em}
+.hero p{margin:0;color:var(--muted);font-size:13.5px;max-width:720px;line-height:1.6}
+.hero .stats{display:flex;gap:22px;margin-top:16px;flex-wrap:wrap}
+.hero .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:96px}
+.hero .stat b{display:block;font-size:22px}
+.hero .stat span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+/* Section */
+.section{padding:26px 30px 6px;scroll-margin-top:74px}
+.shead{display:flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.shead .num{font-size:12px;font-weight:800;color:#fff;background:var(--orange);border-radius:7px;padding:3px 8px}
+.shead h3{margin:0;font-size:19px;letter-spacing:-.01em}
+.shead .c{font-size:12px;color:var(--muted)}
+.sdesc{color:var(--muted);font-size:13px;margin:2px 0 18px;max-width:760px;line-height:1.55}
+.grid{display:flex;flex-wrap:wrap;gap:26px 22px}
+.card{width:212px;cursor:pointer;group:card}
+.phone{position:relative;border-radius:26px;background:#0f1319;padding:7px;
+  box-shadow:0 10px 26px rgba(20,24,31,.14),0 2px 6px rgba(20,24,31,.08);transition:.18s;overflow:hidden}
+.card:hover .phone{transform:translateY(-4px);box-shadow:0 18px 40px rgba(20,24,31,.22)}
+.phone .scr{border-radius:20px;overflow:hidden;background:#fff;max-height:430px;overflow-y:auto;position:relative}
+.phone .scr::-webkit-scrollbar{width:0}
+.phone img{display:block;width:100%}
+.tallbadge{position:absolute;top:14px;right:14px;background:rgba(15,19,25,.82);color:#fff;font-size:9.5px;
+  padding:3px 7px;border-radius:20px;z-index:2;letter-spacing:.03em}
+.cap{margin-top:11px;display:flex;align-items:center;gap:8px}
+.cap .i{font-size:10px;font-weight:700;color:var(--orange);background:#fdece2;border-radius:5px;padding:2px 6px;min-width:26px;text-align:center}
+.cap .t{font-size:12.5px;font-weight:600;line-height:1.25}
+.empty{color:var(--muted);font-size:13px;padding:8px 0 12px}
+footer{padding:40px 30px 60px;color:var(--muted);font-size:12px}
+/* Lightbox */
+.lb{position:fixed;inset:0;background:rgba(12,14,18,.9);backdrop-filter:blur(6px);z-index:50;
+  display:none;align-items:center;justify-content:center}
+.lb.open{display:flex}
+.lb .stage{max-width:min(94vw,520px);max-height:92vh;display:flex;flex-direction:column;align-items:center}
+.lb .frame{border-radius:30px;background:#0f1319;padding:9px;box-shadow:0 30px 80px rgba(0,0,0,.5);
+  max-height:82vh;overflow:hidden}
+.lb .frame .scr{border-radius:22px;overflow:hidden;background:#fff;max-height:calc(82vh - 18px);overflow-y:auto}
+.lb img{display:block;width:100%;max-width:400px}
+.lb .cap2{color:#fff;margin-top:16px;text-align:center}
+.lb .cap2 .f{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--orange);font-weight:700}
+.lb .cap2 .n{font-size:16px;font-weight:600;margin-top:3px}
+.lb .cap2 .idx{font-size:12px;color:#9aa3b0;margin-top:4px}
+.lb button{position:fixed;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+  color:#fff;width:48px;height:48px;border-radius:50%;font-size:22px;cursor:pointer;display:grid;place-items:center}
+.lb button:hover{background:rgba(255,255,255,.22)}
+.lb .prev{left:24px}.lb .next{right:24px}
+.lb .close{top:22px;right:24px;transform:none;width:42px;height:42px;font-size:20px}
+@media(max-width:820px){.side{transform:translateX(-100%)} .main{margin-left:0}}
+</style>
+
+<div class="side">
+  <div class="brand">
+    <div class="logo"><span class="dot">A</span> AXIS Connect</div>
+    <div class="sub">Figma → HTML prototype · complete screen flow</div>
+  </div>
+  <nav class="nav" id="nav"><div class="navh">Flows</div></nav>
+</div>
+
+<div class="main">
+  <div class="top">
+    <div>
+      <h1 id="topTitle">Complete Flow</h1>
+      <div class="meta" id="topMeta"></div>
+    </div>
+    <div class="search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="q" placeholder="Search screens…">
+    </div>
+  </div>
+
+  <div class="hero">
+    <h2>AXIS Connect — Product Flow</h2>
+    <p>Every screen from the Figma design, arranged into the complete end-to-end flow. Click any screen to open it full-size and step through the whole journey with the arrow keys.</p>
+    <div class="stats">
+      <div class="stat"><b>179</b><span>Screens</span></div>
+      <div class="stat"><b>20</b><span>Flows</span></div>
+      <div class="stat"><b>iOS</b><span>Platform</span></div>
+    </div>
+  </div>
+
+  <div id="content"></div>
+  <footer>Generated from Figma file “Axis Connect”. Screens rendered as high-resolution exports. · <span id="fcount"></span></footer>
+</div>
+
+<div class="lb" id="lb">
+  <button class="close" onclick="closeLB()">✕</button>
+  <button class="prev" onclick="nav(-1)">‹</button>
+  <button class="next" onclick="nav(1)">›</button>
+  <div class="stage">
+    <div class="frame"><div class="scr"><img id="lbImg" src=""></div></div>
+    <div class="cap2"><div class="f" id="lbFlow"></div><div class="n" id="lbName"></div><div class="idx" id="lbIdx"></div></div>
+  </div>
+</div>
+
+<script>
+const DATA=[{"flow": "Splash & Sign Up", "num": "01", "desc": "App launch, brand splash, and the multi-step new-account registration.", "screens": [{"name": "Splash Screen", "file": "screens/s01_01.png", "tall": false}, {"name": "Splash Screen 1", "file": "screens/s01_02.png", "tall": false}, {"name": "Splash Screen 2", "file": "screens/s01_03.png", "tall": false}, {"name": "Sign Up", "file": "screens/s01_04.png", "tall": false}, {"name": "Step 2", "file": "screens/s01_05.png", "tall": false}, {"name": "Step- 3", "file": "screens/s01_06.png", "tall": false}, {"name": "Step- 3 - Filled", "file": "screens/s01_07.png", "tall": false}, {"name": "Success- Login", "file": "screens/s01_08.png", "tall": false}]}, {"flow": "Login", "num": "02", "desc": "Returning-user sign in with the branded splash entry point.", "screens": [{"name": "Splash Screen", "file": "screens/s02_01.png", "tall": false}, {"name": "Splash Screen 3", "file": "screens/s02_02.png", "tall": false}, {"name": "Splash Screen 4", "file": "screens/s02_03.png", "tall": false}, {"name": "Login", "file": "screens/s02_04.png", "tall": false}]}, {"flow": "Reset Password", "num": "03", "desc": "Forgot-password journey: request, OTP verification, and setting a new password.", "screens": [{"name": "Reset Your Password", "file": "screens/s03_01.png", "tall": false}, {"name": "Enter OTP", "file": "screens/s03_02.png", "tall": false}, {"name": "Set a New Password", "file": "screens/s03_03.png", "tall": false}, {"name": "Set a New Password-Error", "file": "screens/s03_04.png", "tall": false}, {"name": "Set a New Password-Error", "file": "screens/s03_05.png", "tall": false}, {"name": "Success- Login", "file": "screens/s03_06.png", "tall": false}]}, {"flow": "Home", "num": "04", "desc": "The main feed / landing experience, side menu, and notifications.", "screens": [{"name": "Home Page", "file": "screens/s04_01.png", "tall": true}, {"name": "Home Page", "file": "screens/s04_02.png", "tall": true}, {"name": "Menu", "file": "screens/s04_03.png", "tall": false}, {"name": "Notifications", "file": "screens/s04_04.png", "tall": false}]}, {"flow": "Profile", "num": "05", "desc": "Viewing and editing the personal profile, photo selection and removal.", "screens": [{"name": "Profile", "file": "screens/s05_01.png", "tall": false}, {"name": "Profile options", "file": "screens/s05_02.png", "tall": false}, {"name": "Profile photo selection", "file": "screens/s05_03.png", "tall": false}, {"name": "remove photo confirmation", "file": "screens/s05_04.png", "tall": false}, {"name": "Edit Profile", "file": "screens/s05_05.png", "tall": true}, {"name": "Profile", "file": "screens/s05_06.png", "tall": false}, {"name": "Profile", "file": "screens/s05_07.png", "tall": false}]}, {"flow": "Community", "num": "06", "desc": "Community feed with comments, likes and sharing interactions.", "screens": [{"name": "Community", "file": "screens/s06_01.png", "tall": true}, {"name": "Comments", "file": "screens/s06_02.png", "tall": false}, {"name": "Comments 1", "file": "screens/s06_03.png", "tall": false}, {"name": "Comments 3", "file": "screens/s06_04.png", "tall": false}, {"name": "Liked by", "file": "screens/s06_05.png", "tall": false}, {"name": "Share", "file": "screens/s06_06.png", "tall": false}, {"name": "Share", "file": "screens/s06_07.png", "tall": false}]}, {"flow": "Add Post", "num": "07", "desc": "Composing and publishing a new post, including company-user variants.", "screens": [{"name": "Add Post", "file": "screens/s07_01.png", "tall": false}, {"name": "Add Post", "file": "screens/s07_02.png", "tall": false}, {"name": "Add Post", "file": "screens/s07_03.png", "tall": false}, {"name": "Add Post 2", "file": "screens/s07_04.png", "tall": false}, {"name": "Add Post 3", "file": "screens/s07_05.png", "tall": false}, {"name": "Add Post 5", "file": "screens/s07_06.png", "tall": false}, {"name": "Add Post/Company  user", "file": "screens/s07_07.png", "tall": false}]}, {"flow": "Trending Now", "num": "08", "desc": "Trending content — news, polls and surveys with detail views.", "screens": [{"name": "Trending Now News", "file": "screens/s08_01.png", "tall": true}, {"name": "News detail page", "file": "screens/s08_02.png", "tall": true}, {"name": "Trending Now Polls", "file": "screens/s08_03.png", "tall": true}, {"name": "Trending Now Survey", "file": "screens/s08_04.png", "tall": true}, {"name": "Survey detail page", "file": "screens/s08_05.png", "tall": false}, {"name": "Survey detail page", "file": "screens/s08_06.png", "tall": false}, {"name": "Survey detail page", "file": "screens/s08_07.png", "tall": false}, {"name": "Survey detail page", "file": "screens/s08_08.png", "tall": false}, {"name": "Survey detail page", "file": "screens/s08_09.png", "tall": false}, {"name": "Success- Login", "file": "screens/s08_10.png", "tall": false}]}, {"flow": "Magazine", "num": "09", "desc": "The in-app magazine reader.", "screens": [{"name": "Magazine", "file": "screens/s09_01.png", "tall": false}]}, {"flow": "My Wall", "num": "10", "desc": "Personal wall — posts, edit, delete and empty states.", "screens": [{"name": "My wall Empty", "file": "screens/s10_01.png", "tall": false}, {"name": "My wall", "file": "screens/s10_02.png", "tall": false}, {"name": "My wall options", "file": "screens/s10_03.png", "tall": false}, {"name": "Edit Post", "file": "screens/s10_04.png", "tall": false}, {"name": "Edit Post Success", "file": "screens/s10_05.png", "tall": false}, {"name": "Delete Post", "file": "screens/s10_06.png", "tall": false}, {"name": "Edit Post Success", "file": "screens/s10_07.png", "tall": false}]}, {"flow": "Resources", "num": "11", "desc": "Resource hub: social media, magazines, policies and corporate communication.", "screens": [{"name": "Resources Social Media", "file": "screens/s11_01.png", "tall": false}, {"name": "Resources Social Media 1", "file": "screens/s11_02.png", "tall": false}, {"name": "Resources Social Media 2", "file": "screens/s11_03.png", "tall": false}, {"name": "Resources Magazines", "file": "screens/s11_04.png", "tall": true}, {"name": "Resources Policies", "file": "screens/s11_05.png", "tall": false}, {"name": "Resources Corporate Communication", "file": "screens/s11_06.png", "tall": true}, {"name": "Profile photo selection", "file": "screens/s11_07.png", "tall": false}]}, {"flow": "Events", "num": "12", "desc": "Browsing events, event details, history and photo selection.", "screens": [{"name": "Events", "file": "screens/s12_01.png", "tall": true}, {"name": "Event Detail page", "file": "screens/s12_02.png", "tall": false}, {"name": "Events HIstory", "file": "screens/s12_03.png", "tall": true}, {"name": "Events detail", "file": "screens/s12_04.png", "tall": false}, {"name": "Photo selection", "file": "screens/s12_05.png", "tall": false}]}, {"flow": "Groups", "num": "13", "desc": "Discovering, creating and managing groups plus group messages.", "screens": [{"name": "Groups", "file": "screens/s13_01.png", "tall": false}, {"name": "My Groups", "file": "screens/s13_02.png", "tall": false}, {"name": "Groups", "file": "screens/s13_03.png", "tall": false}, {"name": "Groups list expanded", "file": "screens/s13_04.png", "tall": false}, {"name": "Groups requested", "file": "screens/s13_05.png", "tall": false}, {"name": "Create Group", "file": "screens/s13_06.png", "tall": false}, {"name": "Create Group 1", "file": "screens/s13_07.png", "tall": false}, {"name": "Create Group 2", "file": "screens/s13_08.png", "tall": false}, {"name": "My Groups", "file": "screens/s13_09.png", "tall": false}, {"name": "Messages", "file": "screens/s13_10.png", "tall": false}, {"name": "Messages", "file": "screens/s13_11.png", "tall": false}, {"name": "Profile", "file": "screens/s13_12.png", "tall": true}, {"name": "Share", "file": "screens/s13_13.png", "tall": true}, {"name": "Profile", "file": "screens/s13_14.png", "tall": false}]}, {"flow": "Colleagues", "num": "14", "desc": "Colleague directory, search and colleague detail pages.", "screens": [{"name": "Colleagues", "file": "screens/s14_01.png", "tall": false}, {"name": "Colleagues Search", "file": "screens/s14_02.png", "tall": false}, {"name": "Colleagues Details", "file": "screens/s14_03.png", "tall": false}]}, {"flow": "Change Password", "num": "15", "desc": "Changing the account password from the menu.", "screens": [{"name": "Change password- Menu", "file": "screens/s15_01.png", "tall": false}]}, {"flow": "Chat", "num": "16", "desc": "1:1 and group messaging — send, edit, delete, copy, pin, reply and chat management.", "screens": [{"name": "Empty State Chat", "file": "screens/s16_01.png", "tall": false}, {"name": "Start a New Chat", "file": "screens/s16_02.png", "tall": false}, {"name": "Message", "file": "screens/s16_03.png", "tall": false}, {"name": "Message 2", "file": "screens/s16_04.png", "tall": false}, {"name": "Message 3", "file": "screens/s16_05.png", "tall": false}, {"name": "Message Typing", "file": "screens/s16_06.png", "tall": false}, {"name": "Message Typing 2", "file": "screens/s16_07.png", "tall": false}, {"name": "Message Typing 3", "file": "screens/s16_08.png", "tall": false}, {"name": "Message Selected", "file": "screens/s16_09.png", "tall": false}, {"name": "Copy message", "file": "screens/s16_10.png", "tall": false}, {"name": "Messages", "file": "screens/s16_11.png", "tall": true}, {"name": "Edit message", "file": "screens/s16_12.png", "tall": false}, {"name": "Edit message", "file": "screens/s16_13.png", "tall": false}, {"name": "Delete message", "file": "screens/s16_14.png", "tall": false}, {"name": "Delete message 1", "file": "screens/s16_15.png", "tall": false}, {"name": "Pin message", "file": "screens/s16_16.png", "tall": false}, {"name": "Pin message Confirmation", "file": "screens/s16_17.png", "tall": false}, {"name": "Pinned message", "file": "screens/s16_18.png", "tall": false}, {"name": "Messages", "file": "screens/s16_19.png", "tall": false}, {"name": "Messages", "file": "screens/s16_20.png", "tall": false}, {"name": "Unpin Message", "file": "screens/s16_21.png", "tall": false}, {"name": "Unpin Message Confirmation", "file": "screens/s16_22.png", "tall": false}, {"name": "Unpin Message Success", "file": "screens/s16_23.png", "tall": false}, {"name": "Chat", "file": "screens/s16_24.png", "tall": false}, {"name": "Group Chat", "file": "screens/s16_25.png", "tall": false}, {"name": "Chat", "file": "screens/s16_26.png", "tall": false}, {"name": "Chat", "file": "screens/s16_27.png", "tall": false}, {"name": "Chat", "file": "screens/s16_28.png", "tall": false}, {"name": "Replace PIn", "file": "screens/s16_29.png", "tall": false}, {"name": "Replace PIn Confirmation", "file": "screens/s16_30.png", "tall": false}, {"name": "Replace PIn", "file": "screens/s16_31.png", "tall": false}, {"name": "Delete Chat", "file": "screens/s16_32.png", "tall": false}, {"name": "Delete Chat Success", "file": "screens/s16_33.png", "tall": false}, {"name": "About", "file": "screens/s16_34.png", "tall": false}, {"name": "About chat", "file": "screens/s16_35.png", "tall": false}]}, {"flow": "HRMS", "num": "17", "desc": "HR self-service: holidays, attendance, and the full leave-application flow.", "screens": [{"name": "HRMS", "file": "screens/s17_01.png", "tall": true}, {"name": "Holidays", "file": "screens/s17_02.png", "tall": false}, {"name": "Holidays", "file": "screens/s17_03.png", "tall": false}, {"name": "Holidays", "file": "screens/s17_04.png", "tall": false}, {"name": "Attendance", "file": "screens/s17_05.png", "tall": false}, {"name": "Attendance", "file": "screens/s17_06.png", "tall": false}, {"name": "Attendance", "file": "screens/s17_07.png", "tall": false}, {"name": "My Leaves", "file": "screens/s17_08.png", "tall": true}, {"name": "Filter", "file": "screens/s17_09.png", "tall": false}, {"name": "Pending Leaves", "file": "screens/s17_10.png", "tall": false}, {"name": "Apply Leave", "file": "screens/s17_11.png", "tall": false}, {"name": "Apply Leave", "file": "screens/s17_12.png", "tall": false}, {"name": "Leave Type", "file": "screens/s17_13.png", "tall": false}, {"name": "Leave", "file": "screens/s17_14.png", "tall": true}, {"name": "Leave", "file": "screens/s17_15.png", "tall": false}, {"name": "Leave", "file": "screens/s17_16.png", "tall": false}, {"name": "Leave", "file": "screens/s17_17.png", "tall": false}]}, {"flow": "Approval Requests", "num": "18", "desc": "Manager view for approving or rejecting employee requests.", "screens": [{"name": "Workplace", "file": "screens/s18_01.png", "tall": true}, {"name": "Leave", "file": "screens/s18_02.png", "tall": false}, {"name": "Leave", "file": "screens/s18_03.png", "tall": false}, {"name": "Leave", "file": "screens/s18_04.png", "tall": false}, {"name": "Leave", "file": "screens/s18_05.png", "tall": false}, {"name": "Leave", "file": "screens/s18_06.png", "tall": false}, {"name": "Edit Post Success", "file": "screens/s18_07.png", "tall": false}, {"name": "Leave", "file": "screens/s18_08.png", "tall": false}, {"name": "Leave", "file": "screens/s18_09.png", "tall": true}]}, {"flow": "Meter Reading", "num": "19", "desc": "AXIS RIOC field flow to capture a meter/sensor reading via photo.", "screens": [{"name": "Login", "file": "screens/s19_01.png", "tall": false}, {"name": "Home Page", "file": "screens/s19_02.png", "tall": false}, {"name": "Menu", "file": "screens/s19_03.png", "tall": false}, {"name": "Sensor type_unselected", "file": "screens/s19_04.png", "tall": false}, {"name": "Sensor type_selected", "file": "screens/s19_05.png", "tall": false}, {"name": "Meter Type_unselected", "file": "screens/s19_06.png", "tall": false}, {"name": "Meter Type_selected", "file": "screens/s19_07.png", "tall": false}, {"name": "Capture photo", "file": "screens/s19_08.png", "tall": false}, {"name": "Image error", "file": "screens/s19_09.png", "tall": false}, {"name": "Confirm", "file": "screens/s19_10.png", "tall": false}, {"name": "Successfully added", "file": "screens/s19_11.png", "tall": false}]}, {"flow": "Billing Automation", "num": "20", "desc": "Inward billing automation — capture, verify, edit and approve bills.", "screens": [{"name": "Sensor type_unselected", "file": "screens/s20_01.png", "tall": false}, {"name": "Capture photo", "file": "screens/s20_02.png", "tall": false}, {"name": "Verify Bill", "file": "screens/s20_03.png", "tall": true}, {"name": "Verify Bill_Image", "file": "screens/s20_04.png", "tall": false}, {"name": "Confirmation", "file": "screens/s20_05.png", "tall": false}, {"name": "Today's Bills Processed", "file": "screens/s20_06.png", "tall": false}, {"name": "Bill Details", "file": "screens/s20_07.png", "tall": false}, {"name": "Edit Bill Details", "file": "screens/s20_08.png", "tall": true}, {"name": "Verify Bill", "file": "screens/s20_09.png", "tall": true}, {"name": "Add Bill Manual", "file": "screens/s20_10.png", "tall": true}, {"name": "Add Bill Manual", "file": "screens/s20_11.png", "tall": true}, {"name": "Account Person", "file": "screens/s20_12.png", "tall": false}, {"name": "Approval screen", "file": "screens/s20_13.png", "tall": false}, {"name": "Approve message", "file": "screens/s20_14.png", "tall": false}, {"name": "Rejection message", "file": "screens/s20_15.png", "tall": false}, {"name": "Confirmation", "file": "screens/s20_16.png", "tall": false}]}];
+const flat=[];
+DATA.forEach(fl=>fl.screens.forEach(s=>flat.push({flow:fl.flow,num:fl.num,name:s.name,file:s.file})));
+const TOTAL=flat.length;
+document.getElementById('fcount').textContent=TOTAL+' screens across '+DATA.length+' flows';
+
+// nav
+const nav=document.getElementById('nav');
+DATA.forEach(fl=>{
+  const a=document.createElement('a');a.href='#f'+fl.num;a.dataset.f=fl.num;
+  a.innerHTML=`<span class="n">${fl.num}</span><span>${fl.flow}</span><span class="cnt">${fl.screens.length}</span>`;
+  nav.appendChild(a);
+});
+
+// content
+const content=document.getElementById('content');
+DATA.forEach(fl=>{
+  const sec=document.createElement('section');sec.className='section';sec.id='f'+fl.num;
+  sec.innerHTML=`<div class="shead"><span class="num">${fl.num}</span><h3>${fl.flow}</h3><span class="c">${fl.screens.length} screen${fl.screens.length>1?'s':''}</span></div><div class="sdesc">${fl.desc}</div>`;
+  const grid=document.createElement('div');grid.className='grid';
+  fl.screens.forEach((s,i)=>{
+    const idx=flat.findIndex(x=>x.file===s.file);
+    const card=document.createElement('div');card.className='card';card.dataset.name=(s.name+' '+fl.flow).toLowerCase();
+    card.innerHTML=`<div class="phone">${s.tall?'<span class="tallbadge">scroll ↓</span>':''}<div class="scr"><img loading="lazy" src="${s.file}"></div></div>
+      <div class="cap"><span class="i">${fl.num}.${String(i+1).padStart(2,'0')}</span><span class="t">${s.name}</span></div>`;
+    card.onclick=()=>openLB(idx);
+    grid.appendChild(card);
+  });
+  sec.appendChild(grid);content.appendChild(sec);
+});
+
+// lightbox
+let cur=0;
+function openLB(i){cur=i;render();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden';}
+function closeLB(){document.getElementById('lb').classList.remove('open');document.body.style.overflow='';}
+function navTo(d){cur=(cur+d+TOTAL)%TOTAL;render();}
+window.nav=navTo;window.openLB=openLB;window.closeLB=closeLB;
+function render(){const s=flat[cur];
+  document.getElementById('lbImg').src=s.file;
+  document.getElementById('lbImg').parentElement.scrollTop=0;
+  document.getElementById('lbFlow').textContent=s.num+' · '+s.flow;
+  document.getElementById('lbName').textContent=s.name;
+  document.getElementById('lbIdx').textContent=(cur+1)+' / '+TOTAL;}
+document.getElementById('lb').addEventListener('click',e=>{if(e.target.id==='lb')closeLB();});
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lb').classList.contains('open'))return;
+  if(e.key==='Escape')closeLB();if(e.key==='ArrowRight')navTo(1);if(e.key==='ArrowLeft')navTo(-1);});
+
+// search
+document.getElementById('q').addEventListener('input',e=>{
+  const v=e.target.value.trim().toLowerCase();
+  document.querySelectorAll('.section').forEach(sec=>{
+    let vis=0;
+    sec.querySelectorAll('.card').forEach(c=>{const m=!v||c.dataset.name.includes(v);c.style.display=m?'':'none';if(m)vis++;});
+    sec.style.display=vis?'':'none';
+  });
+});
+
+// scrollspy
+const secs=[...document.querySelectorAll('.section')];
+const links=[...document.querySelectorAll('.nav a')];
+const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){
+  const id=en.target.id.slice(1);links.forEach(l=>l.classList.toggle('active',l.dataset.f===id));
+  document.getElementById('topTitle').textContent=en.target.querySelector('h3').textContent;
+  document.getElementById('topMeta').textContent='Flow '+id+' of '+String(DATA.length).padStart(2,'0');
+}});},{rootMargin:'-45% 0px -50% 0px'});
+secs.forEach(s=>io.observe(s));
+</script>
