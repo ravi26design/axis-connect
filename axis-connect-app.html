@@ -566,7 +566,14 @@ const holidays=[
  {d:'25',m:'Dec',n:'Christmas',w:'Wednesday'}
 ];
 const leaveTypes=['Loss Of Pay','Sick Leave','Casual Leave','Early Start','Off Site Visit'];
-const applyMenu=[['Leave',I.palm],['Restricted Holiday',I.cal],['Comp Off Grant',I.clock],['Leave Cancel',I.bill]];
+const applyMenu=[['Leave',I.palm,'leaveform'],['Restricted Holiday',I.cal,'rholiday'],['Comp Off Grant',I.clock,'compoff'],['Leave Cancel',I.bill,'leavecancel']];
+const restrictedHolidays=[
+ {d:'14',m:'Jan',n:'Makar Sankranti',w:'Wednesday'},
+ {d:'26',m:'Mar',n:'Holi (Dhuleti)',w:'Thursday'},
+ {d:'07',m:'Aug',n:'Raksha Bandhan',w:'Friday'},
+ {d:'31',m:'Oct',n:'Diwali',w:'Saturday'},
+ {d:'25',m:'Dec',n:'Christmas',w:'Friday'}
+];
 // attendance status per day (Dec 2024): p=present a=absent o=dayoff
 const attDec={2:'p',3:'p',4:'p',5:'p',6:'a',7:'p',9:'p',10:'p',11:'p',12:'a',13:'p',14:'o',16:'p',17:'p',18:'p',19:'p',20:'p',21:'p',23:'p',24:'p',25:'p',26:'p',27:'o',28:'a',30:'p',31:'p'};
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -845,7 +852,7 @@ const SCREENS={
 
  applyleavemenu(){return `<div class="screen">${subHeader('Apply Leave','<button class="iconbtn" onclick="toast(\'Filter\')">'+I.filter+'</button>')}
    <div class="scroll pad">
-     ${applyMenu.map(m=>`<div class="qa" onclick="${m[0]==='Leave'?"go('leaveform')":"toast('"+m[0]+"')"}"><div class="qi">${m[1]}</div><div class="qn">${m[0]}</div>${I.chevR}</div>`).join('')}
+     ${applyMenu.map(m=>`<div class="qa" onclick="go('${m[2]}')"><div class="qi">${m[1]}</div><div class="qn">${m[0]}</div>${I.chevR}</div>`).join('')}
    </div></div>`;},
 
  leaveform(){return `<div class="screen">${subHeader('Apply Leave','<button class="iconbtn" onclick="toast(\'Filter\')">'+I.filter+'</button>')}
@@ -864,6 +871,42 @@ const SCREENS={
      <textarea id="leaveReason" style="width:100%;min-height:110px;border:none;border-radius:12px;padding:14px;font-family:var(--font);font-size:14.5px;outline:none;resize:none;box-shadow:0 4px 14px rgba(30,32,40,.05)" placeholder="Write here"></textarea>
    </div>
    <div class="stickybtn"><button class="btn" onclick="submitLeave()">Apply Leave</button></div></div>`;},
+
+ rholiday(){return `<div class="screen">${subHeader('Restricted Holiday')}
+   <div class="scroll pad">
+     <p style="color:var(--muted);font-size:13px;margin:0 0 14px;line-height:1.5">Choose an optional holiday to apply. You can avail up to <b>2</b> restricted holidays this year.</p>
+     ${restrictedHolidays.map((h,i)=>`<div class="opt" onclick="selOne(this)" style="align-items:center;margin-bottom:10px">
+       <span class="radio${i===0?' on':''}"></span>
+       <div class="hdate" style="width:46px;height:46px"><b style="font-size:16px">${h.d}</b><span>${h.m}</span></div>
+       <div style="flex:1"><div style="font-weight:600;font-size:14px">${h.n}</div><div style="color:var(--muted);font-size:12px">${h.w}</div></div></div>`).join('')}
+     <div class="flabel" style="margin-top:8px">Reason (optional)</div>
+     <textarea style="width:100%;min-height:100px;border:none;border-radius:12px;padding:14px;font-family:var(--font);font-size:14.5px;outline:none;resize:none;box-shadow:0 4px 14px rgba(30,32,40,.05)" placeholder="Write here"></textarea>
+   </div>
+   <div class="stickybtn"><button class="btn" onclick="toast('Restricted holiday applied ✓');setTimeout(()=>go('myleaves',true),650)">Apply</button></div></div>`;},
+
+ compoff(){return `<div class="screen">${subHeader('Comp Off Grant')}
+   <div class="scroll pad">
+     <div class="flabel">Worked On</div>
+     <div class="fieldbox" onclick="openDatePicker(this.querySelector('input'))" style="cursor:pointer">${I.cal}<input readonly placeholder="DD/MM/YYYY" style="cursor:pointer"></div>
+     <div class="flabel">Comp Off Date</div>
+     <div class="fieldbox" onclick="openDatePicker(this.querySelector('input'))" style="cursor:pointer">${I.cal}<input readonly placeholder="DD/MM/YYYY" style="cursor:pointer"></div>
+     <div class="fromcard" style="margin-top:2px"><h3 style="font-size:16px">Applying to</h3>
+       <div style="display:flex;align-items:center;gap:12px">${av('Praneel Vyas',44)}<div><div style="font-weight:600;font-size:14px">Praneel Vyas</div><div style="color:var(--muted);font-size:12px">Reporting Manager</div></div></div></div>
+     <div class="flabel">Reason</div>
+     <textarea style="width:100%;min-height:110px;border:none;border-radius:12px;padding:14px;font-family:var(--font);font-size:14.5px;outline:none;resize:none;box-shadow:0 4px 14px rgba(30,32,40,.05)" placeholder="Why are you requesting comp off?"></textarea>
+   </div>
+   <div class="stickybtn"><button class="btn" onclick="toast('Comp off requested ✓');setTimeout(()=>go('myleaves',true),650)">Submit Request</button></div></div>`;},
+
+ leavecancel(){const cancelable=myLeaves.filter(l=>l.s!=='rejected');const cap=s=>s[0].toUpperCase()+s.slice(1);
+   return `<div class="screen">${subHeader('Leave Cancel')}
+   <div class="scroll pad">
+     <p style="color:var(--muted);font-size:13px;margin:0 0 14px;line-height:1.5">Select a leave request to cancel. Approved leaves may need manager approval to cancel.</p>
+     ${cancelable.map((l,i)=>`<div class="lvcard" onclick="pickSess(this)" style="cursor:pointer;display:flex;gap:12px;align-items:flex-start">
+       <span class="radio${i===0?' on':''}" style="margin-top:2px;flex:0 0 auto"></span>
+       <div style="flex:1"><div class="lh"><h3>${l.t}</h3><span class="pill ${l.s}">${cap(l.s)}</span></div>
+       <div class="dr">${l.d}</div><div class="de">${l.x}</div></div></div>`).join('')}
+   </div>
+   <div class="stickybtn"><button class="btn" onclick="toast('Leave cancellation submitted ✓');setTimeout(()=>go('myleaves',true),650)">Cancel Leave</button></div></div>`;},
 
  resetpw(){return `<div class="screen rscreen">
    <div class="rtop"><button class="iconbtn" onclick="back()">${I.back}</button></div>
