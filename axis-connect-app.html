@@ -828,7 +828,7 @@ const SCREENS={
    return `<div class="screen">${subHeader('My Leaves','<button class="iconbtn'+(leaveFilter!=='all'?' act':'')+'" onclick="openLeaveFilter()">'+I.filter+'</button>')}
    <div class="scroll pad">
      ${leaveFilter!=='all'?`<div class="filterchip">${cap(leaveFilter)} · ${list.length}<span onclick="leaveFilter='all';go('myleaves',true)">✕</span></div>`:''}
-     ${list.length?list.map(l=>{const idx=myLeaves.indexOf(l);const canCancel=(l.s==='pending'||l.s==='approved');
+     ${list.length?list.map(l=>{const idx=myLeaves.indexOf(l);const canCancel=(l.s==='pending');
        return `<div class="lvcard"><div class="lh"><h3>${l.t}</h3><span class="pill ${l.s}">${cap(l.s)}</span></div>
        <div class="dr">${l.d}</div><div class="de">${l.x}</div>
        ${canCancel?`<button class="lv-cancel" onclick="askCancel(${idx})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg> Cancel Leave</button>`:''}</div>`;}).join(''):`<div class="empty-illustration" style="padding:56px 20px">No ${leaveFilter} leaves found.</div>`}
@@ -904,10 +904,11 @@ const SCREENS={
    </div>
    <div class="stickybtn"><button class="btn" onclick="toast('Comp off requested ✓');setTimeout(()=>go('myleaves',true),650)">Submit Request</button></div></div>`;},
 
- leavecancel(){const cancelable=myLeaves.filter(l=>l.s!=='rejected');const cap=s=>s[0].toUpperCase()+s.slice(1);
+ leavecancel(){const cancelable=myLeaves.filter(l=>l.s==='pending');const cap=s=>s[0].toUpperCase()+s.slice(1);
    return `<div class="screen">${subHeader('Leave Cancel')}
    <div class="scroll pad">
-     <p style="color:var(--muted);font-size:13px;margin:0 0 14px;line-height:1.5">Select a leave request to cancel. Approved leaves may need manager approval to cancel.</p>
+     <p style="color:var(--muted);font-size:13px;margin:0 0 14px;line-height:1.5">Select a pending leave request to cancel. Only pending requests can be cancelled.</p>
+     ${cancelable.length?'':`<div class="empty-illustration" style="padding:56px 20px">No pending leaves to cancel.</div>`}
      ${cancelable.map((l,i)=>`<div class="lvcard" onclick="pickSess(this)" style="cursor:pointer;display:flex;gap:12px;align-items:flex-start">
        <span class="radio${i===0?' on':''}" style="margin-top:2px;flex:0 0 auto"></span>
        <div style="flex:1"><div class="lh"><h3>${l.t}</h3><span class="pill ${l.s}">${cap(l.s)}</span></div>
