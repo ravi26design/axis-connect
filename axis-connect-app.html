@@ -278,6 +278,11 @@ body{font-family:var(--font);background:#20242d;color:var(--ink);
 .pill.pending{color:var(--primary);border-color:var(--primary);background:#fff6ef}
 .pill.approved{color:#12b76a;border-color:#12b76a;background:#eafcf3}
 .pill.rejected{color:var(--red);border-color:var(--red);background:#fdecec}
+.pill.cancelled{color:#8b90a0;border-color:#c9cdd7;background:#f1f2f5}
+.lv-cancel{margin-top:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:7px;
+  background:#fff;border:1.4px solid #f3c0c0;color:var(--red);border-radius:11px;padding:11px;
+  font-family:var(--font);font-weight:600;font-size:13px;cursor:pointer}
+.lv-cancel:active{background:#fdecec}
 .lvcard .dr{color:var(--muted);font-size:13px;margin-bottom:6px}
 .lvcard .de{color:var(--grey);font-size:13.5px;line-height:1.5}
 .stickybtn{flex:0 0 auto;padding:14px 16px 18px;background:var(--bg);border-top:1px solid var(--line)}
@@ -823,8 +828,10 @@ const SCREENS={
    return `<div class="screen">${subHeader('My Leaves','<button class="iconbtn'+(leaveFilter!=='all'?' act':'')+'" onclick="openLeaveFilter()">'+I.filter+'</button>')}
    <div class="scroll pad">
      ${leaveFilter!=='all'?`<div class="filterchip">${cap(leaveFilter)} · ${list.length}<span onclick="leaveFilter='all';go('myleaves',true)">✕</span></div>`:''}
-     ${list.length?list.map(l=>`<div class="lvcard"><div class="lh"><h3>${l.t}</h3><span class="pill ${l.s}">${cap(l.s)}</span></div>
-       <div class="dr">${l.d}</div><div class="de">${l.x}</div></div>`).join(''):`<div class="empty-illustration" style="padding:56px 20px">No ${leaveFilter} leaves found.</div>`}
+     ${list.length?list.map(l=>{const idx=myLeaves.indexOf(l);const canCancel=(l.s==='pending'||l.s==='approved');
+       return `<div class="lvcard"><div class="lh"><h3>${l.t}</h3><span class="pill ${l.s}">${cap(l.s)}</span></div>
+       <div class="dr">${l.d}</div><div class="de">${l.x}</div>
+       ${canCancel?`<button class="lv-cancel" onclick="askCancel(${idx})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg> Cancel Leave</button>`:''}</div>`;}).join(''):`<div class="empty-illustration" style="padding:56px 20px">No ${leaveFilter} leaves found.</div>`}
    </div>
    <div class="stickybtn"><button class="btn" onclick="go('applyleavemenu')">Apply Leave</button></div></div>`;},
 
@@ -1061,6 +1068,17 @@ function openLeaveFilter(){
    <button class="btn" style="margin-top:6px" onclick="applyLeaveFilter()">Apply Filter</button>`);
 }
 function applyLeaveFilter(){leaveFilter=pendingFilter;closeSheet();go('myleaves',true);}
+let cancelIdx=-1;
+function askCancel(idx){cancelIdx=idx;const l=myLeaves[idx];
+  openSheet(`<h3>Cancel Leave? <span class="iconbtn" style="width:34px;height:34px" onclick="closeSheet()">✕</span></h3>
+   <div class="lvcard" style="box-shadow:none;border:1px solid var(--line);margin-bottom:16px"><div class="lh" style="border:none;padding:0;margin:0"><h3>${l.t}</h3><span class="pill ${l.s}">${l.s[0].toUpperCase()+l.s.slice(1)}</span></div><div class="dr" style="margin-top:8px">${l.d}</div></div>
+   <p style="color:var(--muted);font-size:13.5px;margin:0 0 18px;line-height:1.5">Are you sure you want to cancel this leave request? This action can't be undone.</p>
+   <div style="display:flex;gap:12px">
+     <button class="btn" style="flex:1;width:auto;background:#fff;color:var(--ink);border:1.5px solid var(--line)" onclick="closeSheet()">Keep Leave</button>
+     <button class="btn" style="flex:1;width:auto;background:var(--red)" onclick="confirmCancel()">Yes, Cancel</button>
+   </div>`);
+}
+function confirmCancel(){if(cancelIdx>=0)myLeaves[cancelIdx].s='cancelled';cancelIdx=-1;closeSheet();toast('Leave cancelled ✓');go('myleaves',true);}
 
 /* ---------- wheel date picker ---------- */
 const DP={days:Array.from({length:31},(_,i)=>i+1),
